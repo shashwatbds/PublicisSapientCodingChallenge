@@ -20,7 +20,7 @@ public class CreditCardValidationUtil {
 		return cardLimit.compareTo(BigDecimal.ZERO) > 0 && cardLimit.toString().length()<6;
 	}
 
-	public static boolean isCardNumberValid(BigInteger creditCardNumber) {
+	public static boolean isCardNumberValid(String creditCardNumber) {
 		
 		String cardNumber = creditCardNumber.toString();
 		if(creditCardNumber.toString().length()<=19) {

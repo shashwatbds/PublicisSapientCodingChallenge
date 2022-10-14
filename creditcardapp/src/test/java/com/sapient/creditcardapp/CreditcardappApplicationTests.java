@@ -55,17 +55,17 @@ class CreditcardappApplicationTests extends AbstractTest {
 	
 	@Test
 	public void testCardNumberInvalidLength() {
-		Assert.assertFalse(CreditCardValidationUtil.isCardNumberValid(new BigInteger("12345678901234567890")));
+		Assert.assertFalse(CreditCardValidationUtil.isCardNumberValid("12345678901234567890"));
 	}
 	
 	@Test
 	public void testCardNumberValidLengthButFailedLuhnValidation() {
-		Assert.assertFalse(CreditCardValidationUtil.isCardNumberValid(new BigInteger("123456789012340")));
+		Assert.assertFalse(CreditCardValidationUtil.isCardNumberValid("123456789012340"));
 	}
 	
 	@Test
 	public void testCardNumberValidLengthandVaildLuhnValidation() {
-		Assert.assertTrue(CreditCardValidationUtil.isCardNumberValid(new BigInteger("1358954993914435")));
+		Assert.assertTrue(CreditCardValidationUtil.isCardNumberValid("1358954993914435"));
 	}
 	
 	@Test

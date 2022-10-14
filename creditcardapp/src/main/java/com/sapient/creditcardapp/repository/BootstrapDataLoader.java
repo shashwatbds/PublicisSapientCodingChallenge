@@ -29,8 +29,8 @@ public class BootstrapDataLoader implements CommandLineRunner {
 
 	private List<CreditCard> getDemoList() {
 		List<CreditCard> defaultCards = new ArrayList<>();
-		defaultCards.add(new CreditCard(1L, new BigInteger("1358954993914435"), "Customer One", new BigDecimal(1000), new BigDecimal(-1200)));
-		defaultCards.add(new CreditCard(2L, new BigInteger("9499391443513585"), "Customer Two", new BigDecimal(1500), new BigDecimal(1000)));
+		defaultCards.add(new CreditCard(1L, "1358954993914435", "Customer One", new BigDecimal(1000), new BigDecimal(-1200)));
+		defaultCards.add(new CreditCard(2L, "9499391443513585", "Customer Two", new BigDecimal(1500), new BigDecimal(1000)));
 		return defaultCards;
 	}
 }
