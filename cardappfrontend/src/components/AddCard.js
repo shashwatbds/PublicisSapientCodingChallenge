@@ -12,6 +12,7 @@ export default class AddCard extends Component {
             customerNameError: '',
             cardNumberError: '',
             cardLimitError: '',
+            saveFailedError: '',
             disabledCNameBtn: true,
             disabledCNumBtn: true,
             disabledCLimBtn: true,
@@ -27,7 +28,7 @@ export default class AddCard extends Component {
             cardLimit: this.cardLimit.value
         }
 
-        fetch('http://localhost:8080/creditcardsystem/creditcard/save', {
+            fetch('http://localhost:8080/creditcardsystem/creditcard/save', {
             method:"POST",
             headers:{
                 'Accept': 'application/json',
@@ -35,7 +36,7 @@ export default class AddCard extends Component {
             },
             body: JSON.stringify(card),
         })
-        .then(response=>response.json())
+        .then(response=> {this.setState({saveFailedError: response.json().response.data.message})})
         window.location.reload();
     };
 
@@ -115,6 +116,9 @@ export default class AddCard extends Component {
                 </div>
                 <div className="row">
                     <button className="waves-effect waves-light btn" type="submit" name="action" disabled={this.state.disabledCNumBtn & this.state.disabledCLimBtn & this.state.disabledCNameBtn}>Add</button>
+                </div>
+                <div className="row">
+                    <div className='invalid-feedback'>{this.state.saveFailedError}</div>
                 </div>
                 </form>
         </div>
