@@ -18,7 +18,7 @@ public class CreditCard {
 	@Id
     @GeneratedValue
     private Long id; // do not want in future credit card number to be used as foreign key, even customer name.
-    private BigInteger cardNumber;
+    private String cardNumber;
 	private String customerName;
 	private BigDecimal cardLimit;
 	private BigDecimal cardBalance = BigDecimal.ZERO;;
@@ -27,7 +27,7 @@ public class CreditCard {
 		super();
 	}
 
-	public CreditCard(Long id, BigInteger cardNumber, String customerName, BigDecimal cardLimit,
+	public CreditCard(Long id, String cardNumber, String customerName, BigDecimal cardLimit,
 			BigDecimal cardBalance) {
 		super();
 		this.id = id;
@@ -45,11 +45,11 @@ public class CreditCard {
 		this.id = id;
 	}
 
-	public BigInteger getCardNumber() {
+	public String getCardNumber() {
 		return cardNumber;
 	}
 
-	public void setCardNumber(BigInteger cardNumber) {
+	public void setCardNumber(String cardNumber) {
 		this.cardNumber = cardNumber;
 	}
 
