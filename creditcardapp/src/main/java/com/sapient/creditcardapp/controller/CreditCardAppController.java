@@ -42,10 +42,11 @@ public class CreditCardAppController {
 
 	@PostMapping("/save")
 	public ResponseEntity createClient(@RequestBody CreditCard creditCard) throws URISyntaxException {
-		if(CreditCardValidationUtil.isValidInput(creditCard)) {
+		StringBuilder errorMessage = new StringBuilder("");
+		if(CreditCardValidationUtil.isValidInput(creditCard,errorMessage)) {
 			CreditCard savedCreditCard = creditCardService.saveCreditCardDetails(creditCard);
 			return ResponseEntity.created(new URI("/creditcardsystem/creditcard/save" + savedCreditCard.getId())).body(savedCreditCard);
 		} else 
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid Credit Card Number");//Return correct response code
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage.toString());//Return correct response code
 	}
 }

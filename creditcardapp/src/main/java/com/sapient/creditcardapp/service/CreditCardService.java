@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.sapient.creditcardapp.model.CreditCard;
 import com.sapient.creditcardapp.repository.CreditCardRepository;
+import com.sapient.creditcardapp.util.CreditCardDataUtil;
 
 @Service
 public class CreditCardService {
@@ -23,6 +24,8 @@ public class CreditCardService {
 	}
 
 	public CreditCard saveCreditCardDetails(CreditCard creditCard) {
-		return this.creditCardRepository.save(creditCard);
+		CreditCard savedCreditCard = this.creditCardRepository.save(creditCard);
+		CreditCardDataUtil.getCreditCardList().add(savedCreditCard);
+		return savedCreditCard;
 	}
 }

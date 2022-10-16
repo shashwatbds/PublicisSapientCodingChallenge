@@ -1,88 +1,111 @@
 package com.sapient.creditcardapp;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.net.URI;
-import java.net.http.HttpHeaders;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.sapient.creditcardapp.controller.CreditCardAppController;
-import com.sapient.creditcardapp.model.CreditCard;
 import com.sapient.creditcardapp.util.CreditCardValidationUtil;
-
-import junit.framework.Assert;
 
 @SpringBootTest
 class CreditcardappApplicationTests extends AbstractTest {
 
 	@Autowired
 	public CreditCardAppController controller;
-	
+
 	@Override
 	@BeforeEach
 	public void setUp() {
 		super.setUp();
 	}
-	
+
 	@Test
 	public void testEmptyCustomerName() {
-		Assert.assertFalse(CreditCardValidationUtil.isCustomerNameValid(""));
+		StringBuilder errorMessage = new StringBuilder();
+		assertFalse(CreditCardValidationUtil.isCustomerNameValid("", errorMessage));
+		assertEquals(CreditCardValidationUtil.CUST_NAME_INVALID, errorMessage.toString());
 	}
 
 	@Test
 	public void testNullCustomerName() {
-		Assert.assertFalse(CreditCardValidationUtil.isCustomerNameValid(null));
+		StringBuilder errorMessage = new StringBuilder();
+		assertFalse(CreditCardValidationUtil.isCustomerNameValid(null, errorMessage));
+		assertEquals(CreditCardValidationUtil.CUST_NAME_INVALID, errorMessage.toString());
 	}
-	
+
 	@Test
 	public void testValidCustomerName() {
-		Assert.assertTrue(CreditCardValidationUtil.isCustomerNameValid("Customer Name"));// For now Special Characters are allowed in name.
+		StringBuilder errorMessage = new StringBuilder();
+		assertTrue(CreditCardValidationUtil.isCustomerNameValid("Customer Name", errorMessage));// For now Special Characters are allowed in name.
+		assertTrue(errorMessage.toString().isEmpty());
 	}
-	
+
 	@Test
 	public void testCardNumberInvalidLength() {
-		Assert.assertFalse(CreditCardValidationUtil.isCardNumberValid("12345678901234567890"));
+		StringBuilder errorMessage = new StringBuilder();
+		assertFalse(CreditCardValidationUtil.isCardNumberValid("12345678901234567890", errorMessage));
+		assertEquals(errorMessage.toString(), CreditCardValidationUtil.CARD_NUM_LEN_INVALID);
 	}
-	
+
 	@Test
 	public void testCardNumberValidLengthButFailedLuhnValidation() {
-		Assert.assertFalse(CreditCardValidationUtil.isCardNumberValid("123456789012340"));
+		StringBuilder errorMessage = new StringBuilder();
+		assertFalse(CreditCardValidationUtil.isCardNumberValid("123456789012340", errorMessage));
+		assertEquals(CreditCardValidationUtil.CARD_NUM_FORMAT_INVALID, errorMessage.toString());
 	}
-	
+
 	@Test
-	public void testCardNumberValidLengthandVaildLuhnValidation() {
-		Assert.assertTrue(CreditCardValidationUtil.isCardNumberValid("1358954993914435"));
+	public void testCardNumberValidLengthAndVaildLuhnValidation() {
+		StringBuilder errorMessage = new StringBuilder();
+		assertTrue(CreditCardValidationUtil.isCardNumberValid("1558954993914433", errorMessage));
+		assertTrue(errorMessage.toString().isEmpty());
 	}
-	
+
 	@Test
 	public void testNegativeCardLimit() {
-		Assert.assertFalse(CreditCardValidationUtil.isCardLimitValid(new BigDecimal("-123")));
+		StringBuilder errorMessage = new StringBuilder();
+		assertFalse(CreditCardValidationUtil.isCardLimitValid(new BigDecimal("-123"), errorMessage));
+		assertEquals(CreditCardValidationUtil.CARD_LIM_INVALID, errorMessage.toString());
 	}
-	
+
 	@Test
 	public void testValidCardLimit() {
-		Assert.assertTrue(CreditCardValidationUtil.isCardLimitValid(new BigDecimal("123")));
+		StringBuilder errorMessage = new StringBuilder();
+		assertTrue(CreditCardValidationUtil.isCardLimitValid(new BigDecimal("123"), errorMessage));
+		assertTrue(errorMessage.toString().isEmpty());
 	}
-	
+
 	@Test
 	public void testUpperdCardLimit() {
-		Assert.assertFalse(CreditCardValidationUtil.isCardLimitValid(new BigDecimal("123456")));
+		StringBuilder errorMessage = new StringBuilder();
+		assertFalse(CreditCardValidationUtil.isCardLimitValid(new BigDecimal("123456"), errorMessage));
+		assertEquals(CreditCardValidationUtil.CARD_LIM_INVALID, errorMessage.toString());
 	}
-	
+
+	@Test
+	public void testDuplicateCreditCardNumber() {
+		StringBuilder errorMessage = new StringBuilder();
+		assertFalse(CreditCardValidationUtil.isCardNumberUnique("1358954993914435", errorMessage));
+		assertEquals(CreditCardValidationUtil.DUP_CARD_NUM_INVALID, errorMessage.toString());
+	}
+
+	@Test
+	public void testUniqueCreditCardNumber() {
+		StringBuilder errorMessage = new StringBuilder();
+		assertTrue(CreditCardValidationUtil.isCardNumberUnique("1358954993914534", errorMessage));
+		assertTrue(errorMessage.toString().isEmpty());
+	}
+
 	@Test
 	void testFetchAllCards() throws Exception {
 		String uri = "/creditcardsystem/creditcard/fetchAll";
@@ -92,19 +115,19 @@ class CreditcardappApplicationTests extends AbstractTest {
 		int status = mvcResult.getResponse().getStatus();
 		assertEquals(200, status);
 	}
-	
+
 	@Test
 	void testSaveCard() throws Exception {
 		String uri = "/creditcardsystem/creditcard/save";
 		MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders
-	            .post(uri)
-	            .accept(MediaType.APPLICATION_JSON)
-	            .content("{\n"
-	            		+ "    \"cardNumber\": 1358954993914435,\n"
-	            		+ "    \"customerName\": \"Shashwat\",\n"
-	            		+ "    \"cardLimit\": 1200\n"
-	            		+ "}")
-	            .contentType(MediaType.APPLICATION_JSON)).andReturn();
+				.post(uri)
+				.accept(MediaType.APPLICATION_JSON)
+				.content("{\n"
+						+ "    \"cardNumber\": 1853954993914435,\n"
+						+ "    \"customerName\": \"Shashwat\",\n"
+						+ "    \"cardLimit\": 1200\n"
+						+ "}")
+				.contentType(MediaType.APPLICATION_JSON)).andReturn();
 
 		int status = mvcResult.getResponse().getStatus();
 		assertEquals(201, status);
