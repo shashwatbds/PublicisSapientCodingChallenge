@@ -18,11 +18,6 @@ import com.sapient.creditcardapp.model.CreditCard;
 import com.sapient.creditcardapp.service.CreditCardService;
 import com.sapient.creditcardapp.util.CreditCardValidationUtil;
 
-/**
- * 1) Test Coverage
- * 2) Validation - send appropriate response code and message
- * 3) Rest API authentication.
- * */
 @RestController
 @RequestMapping("/creditcardsystem/creditcard")
 @CrossOrigin(origins="http://localhost:3000")
